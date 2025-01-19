@@ -1,27 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+function setToLocalStorage(tasks) {
+  localStorage.setItem("taskList", JSON.stringify(tasks));
+}
+function getLocalstorage() {
+  return JSON.parse(localStorage.getItem("taskList")) || [];
+}
 export const taskSlice = createSlice({
   name: "taskList",
   initialState: {
-    tasks: JSON.parse(localStorage.getItem("taskList")) || [],
+    tasks: getLocalstorage(),
   },
   reducers: {
     addTask: (state, actions) => {
       state.tasks.push(actions.payload);
-      localStorage.setItem("taskList", JSON.stringify(state.tasks));
+      setToLocalStorage(state.tasks);
     },
     updateTask: (state, actions) => {
       const { id, name, priority } = actions.payload;
       const findTask = state.tasks.find((task) => task.id === id);
       findTask.name = name;
       findTask.priority = priority;
-      localStorage.setItem("taskList", JSON.stringify(state.tasks));
+      setToLocalStorage(state.tasks);
     },
     deleteTask: (state, actions) => {
       const { id } = actions.payload;
       const updateTask = state.tasks.filter((task) => task.id != id);
       state.tasks = updateTask;
-      localStorage.setItem("taskList", JSON.stringify(state.tasks));
+      setToLocalStorage(state.tasks);
     },
   },
 });
